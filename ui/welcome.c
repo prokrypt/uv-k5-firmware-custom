@@ -87,10 +87,11 @@ void UI_DisplayWelcome(void)
 			EEPROM_ReadBuffer(0x0EB0, WelcomeString0, 16);
 			EEPROM_ReadBuffer(0x0EC0, WelcomeString1, 16);
 
-			if(strlen(WelcomeString1) == 0)
-			{
-				strcpy(WelcomeString1, "BIENVENUE");
-			}
+			// Given the above, we should never have an empty WelcomString1
+			//if(strlen(WelcomeString1) == 0)
+			//{
+			//	strcpy(WelcomeString1, "BIENVENUE");
+			//}
 		}
 
 		UI_PrintString(WelcomeString0, 0, 127, 0, 10);
