@@ -65,9 +65,6 @@ void SystickHandler(void)
 		DECREMENT(gSerialConfigCountDown_500ms);
 	}
 
-	if ((gGlobalSysTickCounter & 3) == 0)
-		gNextTimeslice40ms = true;
-
 #ifdef ENABLE_NOAA
 	DECREMENT(gNOAACountdown_10ms);
 #endif

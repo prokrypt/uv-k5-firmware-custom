@@ -333,7 +333,6 @@ extern volatile uint8_t      gFoundCTCSSCountdown_10ms;
 #ifdef ENABLE_VOX
 	extern volatile uint16_t gVoxStopCountdown_10ms;
 #endif
-extern volatile bool         gNextTimeslice40ms;
 #ifdef ENABLE_NOAA
 	extern volatile uint16_t gNOAACountdown_10ms;
 	extern volatile bool     gScheduleNOAA;

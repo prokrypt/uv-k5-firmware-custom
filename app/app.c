@@ -354,13 +354,10 @@ static void HandleReceive(void)
 
 	if (!gEndOfRxDetectedMaybe         &&
 	     Mode == END_OF_RX_MODE_SKIP   &&
-	     gNextTimeslice40ms            &&
 	     gEeprom.TAIL_TONE_ELIMINATION &&
 	     (gCurrentCodeType == CODE_TYPE_DIGITAL || gCurrentCodeType == CODE_TYPE_REVERSE_DIGITAL) &&
 	     BK4819_GetCTCType() == 1)
 		Mode = END_OF_RX_MODE_TTE;
-	else
-		gNextTimeslice40ms = false;
 
 Skip:
 	switch (Mode)
