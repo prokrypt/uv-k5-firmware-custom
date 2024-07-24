@@ -69,14 +69,18 @@ bool FM_CheckValidChannel(uint8_t Channel)
 
 uint8_t FM_FindNextChannel(uint8_t Channel, uint8_t Direction)
 {
-	for (unsigned i = 0; i < ARRAY_SIZE(gFM_Channels); i++) {
-		if (Channel == 0xFF)
-			Channel = ARRAY_SIZE(gFM_Channels) - 1;
-		else if (Channel >= ARRAY_SIZE(gFM_Channels))
-			Channel = 0;
+	unsigned i = 0;
+
+	if (Channel == 0xFF)
+		Channel = ARRAY_SIZE(gFM_Channels) - 1;
+	else if (Channel >= ARRAY_SIZE(gFM_Channels))
+		Channel = 0;
+
+	while (i < ARRAY_SIZE(gFM_Channels)) {
 		if (FM_CheckValidChannel(Channel))
 			return Channel;
 		Channel += Direction;
+		i++;
 	}
 
 	return 0xFF;
