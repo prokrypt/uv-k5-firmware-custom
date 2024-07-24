@@ -30,9 +30,7 @@ void DATA_Init(void);
 
 void BSS_Init(void)
 {
-	for (uint32_t *pBss = __bss_start__; pBss < __bss_end__; pBss++) {
-		*pBss = 0;
-	}
+	memset(__bss_start__, 0, (__bss_end__ - __bss_start__));
 }
 
 void DATA_Init(void)
