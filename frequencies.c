@@ -149,7 +149,7 @@ uint32_t FREQUENCY_RoundToStep(uint32_t freq, uint16_t step)
 	if(step == 833) {
         uint32_t base = freq/2500*2500;
         int chno = (freq - base) / 700;    // convert entered aviation 8.33Khz channel number scheme to actual frequency. 
-        return base + (chno * 833) + (chno == 3);
+        return base + (chno * step) + (chno == 3);
 	}
 
 	if(step == 1)
