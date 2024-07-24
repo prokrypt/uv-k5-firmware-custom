@@ -31,7 +31,8 @@
 
 #define DECREMENT(cnt) \
 	do {               \
-		if (--(cnt) > 0) continue; \
+		if (cnt > 0)   \
+			cnt--;     \
 	} while (0)
 
 #define DECREMENT_AND_TRIGGER(cnt, flag) \
