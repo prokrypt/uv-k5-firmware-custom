@@ -26,7 +26,9 @@
 #include "board.h"
 #include "bsp/dp32g030/dma.h"
 #include "bsp/dp32g030/gpio.h"
-#include "driver/aes.h"
+#ifdef ENABLE_PWRON_PASSWORD
+	#include "driver/aes.h"
+#endif
 #include "driver/backlight.h"
 #include "driver/bk4819.h"
 #include "driver/crc.h"
@@ -208,7 +210,7 @@ static void SendVersion(void)
 
 	SendReply(&Reply, sizeof(Reply));
 }
-
+#ifdef ENABLE_PWRON_PASSWORD
 static bool IsBadChallenge(const uint32_t *pKey, const uint32_t *pIn, const uint32_t *pResponse)
 {
 	unsigned int i;
@@ -227,7 +229,7 @@ static bool IsBadChallenge(const uint32_t *pKey, const uint32_t *pIn, const uint
 
 	return false;
 }
-
+#endif
 // session init, sends back version info and state
 // timestamp is a session id really
 static void CMD_0514(const uint8_t *pBuffer)
@@ -269,10 +271,10 @@ static void CMD_051B(const uint8_t *pBuffer)
 	Reply.Header.Size = pCmd->Size + 4;
 	Reply.Data.Offset = pCmd->Offset;
 	Reply.Data.Size   = pCmd->Size;
-
+#ifdef ENABLE_PWRON_PASSWORD
 	if (bHasCustomAesKey)
 		bLocked = gIsLocked;
-
+#endif
 	if (!bLocked)
 		EEPROM_ReadBuffer(pCmd->Offset, Reply.Data.Data, pCmd->Size);
 
@@ -301,9 +303,9 @@ static void CMD_051D(const uint8_t *pBuffer)
 	Reply.Header.ID   = 0x051E;
 	Reply.Header.Size = sizeof(Reply.Data);
 	Reply.Data.Offset = pCmd->Offset;
-
+#ifdef ENABLE_PWRON_PASSWORD
 	bIsLocked = bHasCustomAesKey ? gIsLocked : bHasCustomAesKey;
-
+#endif
 	if (!bIsLocked)
 	{
 		unsigned int i;
@@ -357,6 +359,7 @@ static void CMD_0529(void)
 static void CMD_052D(const uint8_t *pBuffer)
 {
 	const CMD_052D_t *pCmd = (const CMD_052D_t *)pBuffer;
+
 	REPLY_052D_t      Reply;
 	bool              bIsLocked;
 
@@ -366,6 +369,7 @@ static void CMD_052D(const uint8_t *pBuffer)
 	Reply.Header.ID   = 0x052E;
 	Reply.Header.Size = sizeof(Reply.Data);
 
+#ifdef ENABLE_PWRON_PASSWORD
 	bIsLocked = bHasCustomAesKey;
 
 	if (!bIsLocked)
@@ -388,7 +392,9 @@ static void CMD_052D(const uint8_t *pBuffer)
 		gTryCount = 3;
 		bIsLocked = true;
 	}
-	
+#else
+		bIsLocked = pCmd->Response[0];
+#endif
 	gIsLocked            = bIsLocked;
 	Reply.Data.bIsLocked = bIsLocked;
 

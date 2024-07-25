@@ -89,8 +89,10 @@ OBJS += external/printf/printf.o
 
 # Drivers
 OBJS += driver/adc.o
+ifeq ($(ENABLE_PWRON_PASSWORD),1)
 ifeq ($(ENABLE_UART),1)
 	OBJS += driver/aes.o
+endif
 endif
 OBJS += driver/backlight.o
 ifeq ($(ENABLE_FMRADIO),1)
@@ -213,7 +215,7 @@ ifeq ($(ENABLE_FEAT_F4HWN),1)
 	VERSION_STRING_1 ?= v2.8.1
 
 	AUTHOR_STRING_2 ?= Voxless
-	VERSION_STRING_2 ?= v1.0.2
+	VERSION_STRING_2 ?= v1.0.3
 
 	AUTHOR_STRING ?= $(AUTHOR_STRING_1)+$(AUTHOR_STRING_2)
 	VERSION_STRING ?= $(VERSION_STRING_2)

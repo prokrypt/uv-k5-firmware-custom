@@ -342,6 +342,11 @@ static void MAIN_Key_DIGITS(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld)
 					gRequestDisplayScreen = DISPLAY_MAIN;
 				}
 
+				if (gScanStateDir != SCAN_OFF) {
+					gBeepToPlay = BEEP_500HZ_60MS_DOUBLE_BEEP_OPTIONAL;
+					return;
+				}
+
 				gWasFKeyPressed = false;
 				gUpdateStatus   = true;
 
@@ -362,13 +367,9 @@ static void MAIN_Key_DIGITS(KEY_Code_t Key, bool bKeyPressed, bool bKeyHeld)
 		if (gScanStateDir != SCAN_OFF){
 			switch(Key){
 				case KEY_1:
-					gEeprom.SCAN_LIST_DEFAULT=0;
-					break;
 				case KEY_2:
-					gEeprom.SCAN_LIST_DEFAULT=1;
-					break;
 				case KEY_3:
-					gEeprom.SCAN_LIST_DEFAULT=2;
+					gEeprom.SCAN_LIST_DEFAULT=Key-1;
 					break;
 				case KEY_0:
 					gEeprom.SCAN_LIST_DEFAULT=3;
@@ -554,6 +555,7 @@ static void MAIN_Key_EXIT(bool bKeyPressed, bool bKeyHeld)
 			else {
 				gScanKeepResult = false;
 				CHFRSCANNER_Stop();
+				gMonitor = false;
 
 #ifdef ENABLE_VOICE
 				gAnotherVoiceID = VOICE_ID_SCANNING_STOP;
@@ -579,6 +581,11 @@ static void MAIN_Key_EXIT(bool bKeyPressed, bool bKeyHeld)
 			gInputBoxIndex        = 0;
 			gRequestDisplayScreen = DISPLAY_MAIN;
 			gBeepToPlay           = BEEP_1KHZ_60MS_OPTIONAL;
+		} else {
+			if (gMR_ChannelExclude[gTxVfo->CHANNEL_SAVE]) {
+				gMR_ChannelExclude[gTxVfo->CHANNEL_SAVE] = false;
+				gBeepToPlay           = BEEP_1KHZ_60MS_OPTIONAL;				
+			}
 		}
 	}
 }
@@ -594,14 +601,13 @@ static void MAIN_Key_MENU(bool bKeyPressed, bool bKeyHeld)
 		if (bKeyPressed) { // long press MENU key
 
 			#ifdef ENABLE_FEAT_F4HWN
-			if(gScanStateDir != SCAN_OFF && gEeprom.SCAN_LIST_DEFAULT < 5)
+			if(gScanStateDir != SCAN_OFF)
 			{
 				if(FUNCTION_IsRx())
 				{
-					gTxVfo->SCANLIST_PARTICIPATION = 0;
 
-					SETTINGS_UpdateChannel(gTxVfo->CHANNEL_SAVE, gTxVfo, true, true, false);
-
+					gMR_ChannelExclude[gTxVfo->CHANNEL_SAVE] = true;
+					
 					gVfoConfigureMode = VFO_CONFIGURE;
 					gFlagResetVfos    = true;
 
@@ -640,6 +646,7 @@ static void MAIN_Key_MENU(bool bKeyPressed, bool bKeyHeld)
 		if (bFlag) {
 			if (gScanStateDir != SCAN_OFF) {
 				CHFRSCANNER_Stop();
+				gMonitor = false;
 				return;
 			}
 
@@ -842,6 +849,7 @@ static void MAIN_Key_UP_DOWN(bool bKeyPressed, bool bKeyHeld, int8_t Direction)
 
 	// jump to the next channel
 	CHFRSCANNER_Start(false, Direction);
+	gFlagReconfigureVfos = true; // keep monitor mode on
 	gScanPauseDelayIn_10ms = 1;
 	gScheduleScanListen = false;
 

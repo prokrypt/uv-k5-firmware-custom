@@ -27,6 +27,7 @@
 #include "settings.h"
 #include "ui/menu.h"
 
+/*
 static const uint32_t gDefaultFrequencyTable[] =
 {
 	14500000,    //
@@ -35,6 +36,7 @@ static const uint32_t gDefaultFrequencyTable[] =
 	43320000,    //
 	43350000     //
 };
+*/
 
 EEPROM_Config_t gEeprom = { 0 };
 
@@ -106,7 +108,7 @@ void SETTINGS_InitEEPROM(void)
 		gEeprom.FM_IsMrMode        = fmCfg.isMrMode;
 	}
 
-	// 0E40..0E67
+	// 0E40..0E67 -> 0E40..0E6F
 	EEPROM_ReadBuffer(0x0E40, gFM_Channels, sizeof(gFM_Channels));
 	FM_ConfigureChannelState();
 #endif
@@ -441,6 +443,7 @@ void SETTINGS_FactoryReset(bool bIsAll)
 		RADIO_InitInfo(gRxVfo, FREQ_CHANNEL_FIRST + BAND6_400MHz, 43350000);
 
 		// set the first few memory channels
+		/* don't need this
 		for (i = 0; i < ARRAY_SIZE(gDefaultFrequencyTable); i++)
 		{
 			const uint32_t Frequency   = gDefaultFrequencyTable[i];
@@ -449,6 +452,7 @@ void SETTINGS_FactoryReset(bool bIsAll)
 			gRxVfo->Band               = FREQUENCY_GetBand(Frequency);
 			SETTINGS_SaveChannel(MR_CHANNEL_FIRST + i, 0, gRxVfo, 2);
 		}
+		*/
 	}
 }
 
@@ -618,12 +622,9 @@ void SETTINGS_SaveSettings(void)
 
 	State[0] = gEeprom.SCAN_LIST_DEFAULT;
 	//State[1] = gEeprom.SCAN_LIST_ENABLED[0];
-	if (gEeprom.SCAN_LIST_ENABLED[0] == 1)
-		tmp = tmp | (1 << 0);
-	if (gEeprom.SCAN_LIST_ENABLED[1] == 1)
-		tmp = tmp | (1 << 1);
-	if (gEeprom.SCAN_LIST_ENABLED[2] == 1)
-		tmp = tmp | (1 << 2);		
+	if (gEeprom.SCAN_LIST_ENABLED[0] == 1) tmp |= 1 << 0;
+	if (gEeprom.SCAN_LIST_ENABLED[1] == 1) tmp |= 1 << 1;
+	if (gEeprom.SCAN_LIST_ENABLED[2] == 1) tmp |= 1 << 2;
 	State[2] = gEeprom.SCANLIST_PRIORITY_CH1[0];
 	State[3] = gEeprom.SCANLIST_PRIORITY_CH2[0];
 	State[4] = gEeprom.SCANLIST_PRIORITY_CH1[1];
@@ -665,16 +666,10 @@ void SETTINGS_SaveSettings(void)
 	memset(State, 0xFF, sizeof(State));
 
 	tmp = 0;
-
-   	if(gSetting_set_inv == 1)
-		tmp = tmp | (1 << 0);
-   	if (gSetting_set_lck == 1)
-		tmp = tmp | (1 << 1);
-	if (gSetting_set_met == 1)
-		tmp = tmp | (1 << 2);
-	if (gSetting_set_gui == 1)
-		tmp = tmp | (1 << 3);
-
+	if (gSetting_set_inv) tmp |= 1 << 0;
+	if (gSetting_set_lck) tmp |= 1 << 1;
+	if (gSetting_set_met) tmp |= 1 << 2;
+	if (gSetting_set_gui) tmp |= 1 << 3;
 	State[5] = ((tmp << 4) | (gSetting_set_ctr & 0x0F));
 	State[6] = ((gSetting_set_tot << 4) | (gSetting_set_eot & 0x0F));
 	State[7] = ((gSetting_set_low << 4) | (gSetting_set_ptt & 0x0F));

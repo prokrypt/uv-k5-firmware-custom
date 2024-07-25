@@ -101,7 +101,7 @@ void     BK4819_EnableScramble(uint8_t Type);
 bool     BK4819_CompanderEnabled(void);
 void     BK4819_SetCompander(const unsigned int mode);
 
-void     BK4819_DisableVox(void);
+//void     BK4819_DisableVox(void);
 void     BK4819_DisableDTMF(void);
 void     BK4819_EnableDTMF(void);
 void     BK4819_PlayTone(uint16_t Frequency, bool bTuningGainSwitch);

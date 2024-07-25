@@ -36,7 +36,7 @@
 	#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 #endif
 
-uint16_t          gFM_Channels[20];
+uint16_t          gFM_Channels[24];
 bool              gFmRadioMode;
 uint8_t           gFmRadioCountdown_500ms;
 volatile uint16_t gFmPlayCountdown_10ms;
@@ -301,7 +301,7 @@ static void Key_DIGITS(KEY_Code_t Key, uint8_t state)
 					return;
 				}
 			}
-			else if (Channel < 20) {
+			else if (Channel < ARRAY_SIZE(gFM_Channels)) {
 #ifdef ENABLE_VOICE
 				gAnotherVoiceID = (VOICE_ID_t)Key;
 #endif
@@ -573,10 +573,10 @@ void FM_Play(void)
 			return;
 		}
 
-		if (gFM_ChannelPosition < 20)
+		if (gFM_ChannelPosition < ARRAY_SIZE(gFM_Channels))
 			gFM_Channels[gFM_ChannelPosition++] = gEeprom.FM_FrequencyPlaying;
 
-		if (gFM_ChannelPosition >= 20) {
+		if (gFM_ChannelPosition >= ARRAY_SIZE(gFM_Channels)) {
 			FM_PlayAndUpdate();
 			GUI_SelectNextDisplay(DISPLAY_FM);
 			return;

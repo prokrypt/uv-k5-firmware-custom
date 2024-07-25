@@ -924,11 +924,11 @@ void BK4819_SetCompander(const unsigned int mode)
 	BK4819_WriteRegister(BK4819_REG_31, r31 | (1u << 3));
 }
 
-void BK4819_DisableVox(void)
+/* void BK4819_DisableVox(void)
 {
 	const uint16_t Value = BK4819_ReadRegister(BK4819_REG_31);
 	BK4819_WriteRegister(BK4819_REG_31, Value & 0xFFFB);
-}
+} */
 
 void BK4819_DisableDTMF(void)
 {

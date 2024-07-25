@@ -56,10 +56,9 @@ void CHFRSCANNER_Start(const bool storeBackupSettings, const int8_t scan_directi
 
 	if (gEeprom.DUAL_WATCH != DUAL_WATCH_OFF) {
 		dwchan = (gEeprom.RX_VFO + 1) & 1u;
-		dwchan = gEeprom.ScreenChannel[dwchan];
+		dwchan = gEeprom.ScreenChannel[dwchan]+1;
 		if (!IS_MR_CHANNEL(dwchan))
 			dwchan = 0;
-	
 	}
 
 	if (IS_MR_CHANNEL(gNextMrChannel))
@@ -261,11 +260,12 @@ static void NextMemChannel(void)
 */			// this bit doesn't yet work if the other VFO is a frequency
 			case SCAN_NEXT_CHAN_DUAL_WATCH:
 				// dual watch is enabled - include the other VFO in the scan
-				if (dwchan){
+				if (dwchan && !gMonitor){
 					if (++dualscan%4==0) {
 						dualscan=0;
 						currentScanList = SCAN_NEXT_CHAN_DUAL_WATCH;
-						gNextMrChannel   = dwchan;
+						if (!gMR_ChannelExclude[dwchan-1])
+							gNextMrChannel   = dwchan-1;
 						break;
 					}
 				}

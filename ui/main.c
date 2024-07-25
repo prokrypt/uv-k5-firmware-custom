@@ -892,44 +892,24 @@ void UI_DisplayMain(void)
 			if (IS_MR_CHANNEL(gEeprom.ScreenChannel[vfo_num]))
 			{	// it's a channel
 
-				uint8_t countList = 0;
 				//uint8_t shiftList = 0;
-
+				uint8_t countList = 0;
+				
 				// show the scan list assigment symbols
 				const ChannelAttributes_t att = gMR_ChannelAttributes[gEeprom.ScreenChannel[vfo_num]];
-
-				if (att.scanlists & 0b001)
-					countList++;
-				if (att.scanlists & 0b010)
-					countList++;
-				if (att.scanlists & 0b100)
-					countList++;
-
-/*
-				shiftList = countList;
-
-				if (att.scanlists & 0b100)
-				{
-					memcpy(p_line0 + 128 - ((shiftList>2?2:shiftList) * 8), BITMAP_ScanList1, sizeof(BITMAP_ScanList1));
-					shiftList--;
+				if (gMR_ChannelExclude[gEeprom.ScreenChannel[vfo_num]]){
+					memcpy(p_line0 + 129 - (1 * 8), BITMAP_ScanList4, sizeof(BITMAP_ScanList4));
+					memcpy(p_line0 + 129 - (2 * 8), BITMAP_ScanList4, sizeof(BITMAP_ScanList4));
+					memcpy(p_line1 + 129 - (2 * 8), BITMAP_ScanList4, sizeof(BITMAP_ScanList4));
+				} else {
+					countList = __builtin_popcount(att.scanlists & 0b111);
+					if (att.scanlists & 0b001)
+						memcpy(p_line0 + 129 - (2 * 8), BITMAP_ScanList1, sizeof(BITMAP_ScanList1));
+					if (att.scanlists & 0b010)
+						memcpy(p_line0 + 129 - (1 * 8), BITMAP_ScanList2, sizeof(BITMAP_ScanList2));
+					if (att.scanlists & 0b100)
+						memcpy(p_line1 + 129 - (2 * 8), BITMAP_ScanList3, sizeof(BITMAP_ScanList3));
 				}
-				if (att.scanlists & 0b010)
-				{
-					memcpy(((shiftList%2==1)?p_line0:p_line1) + 128 - ((shiftList>2?2:shiftList) * 8), BITMAP_ScanList2, sizeof(BITMAP_ScanList2));
-					shiftList--;
-				}
-				if (att.scanlists & 0b001)
-				{
-					memcpy(((shiftList%2==1)?p_line0:p_line1) + 128 - ((shiftList>2?2:shiftList) * 8), BITMAP_ScanList3, sizeof(BITMAP_ScanList3));
-				}
-*/
-				if (att.scanlists & 0b001)
-					memcpy(p_line0 + 129 - (2 * 8), BITMAP_ScanList1, sizeof(BITMAP_ScanList1));
-				if (att.scanlists & 0b010)
-					memcpy(p_line0 + 129 - (1 * 8), BITMAP_ScanList2, sizeof(BITMAP_ScanList2));
-				if (att.scanlists & 0b100)
-					memcpy(p_line1 + 129 - (2 * 8), BITMAP_ScanList3, sizeof(BITMAP_ScanList3));
-
 
 				if(countList == 0)
 				{

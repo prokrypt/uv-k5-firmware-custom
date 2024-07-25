@@ -203,6 +203,7 @@ typedef union {
 } ChannelAttributes_t;
 
 extern ChannelAttributes_t   gMR_ChannelAttributes[207];
+extern bool                  gMR_ChannelExclude[207];
 
 extern volatile uint16_t     gBatterySaveCountdown_10ms;
 

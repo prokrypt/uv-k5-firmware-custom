@@ -125,7 +125,7 @@ void FUNCTION_PowerSave() {
 
 	gMonitor = false;
 
-	BK4819_DisableVox();
+//	BK4819_DisableVox();
 	BK4819_Sleep();
 
 	BK4819_ToggleGpioOut(BK4819_GPIO0_PIN28_RX_ENABLE, false);

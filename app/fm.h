@@ -28,7 +28,7 @@ enum {
 	FM_SCAN_OFF = 0U,
 };
 
-extern uint16_t          gFM_Channels[20];
+extern uint16_t          gFM_Channels[24];
 extern bool              gFmRadioMode;
 extern uint8_t           gFmRadioCountdown_500ms;
 extern volatile uint16_t gFmPlayCountdown_10ms;

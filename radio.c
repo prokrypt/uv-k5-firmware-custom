@@ -64,6 +64,9 @@ bool RADIO_CheckValidChannel(uint16_t channel, bool checkScanList, uint8_t scanL
 
 	const ChannelAttributes_t att = gMR_ChannelAttributes[channel];
 
+	if (checkScanList && gMR_ChannelExclude[channel] == true)
+		return false;
+
 	if (att.band > BAND7_470MHz)
 		return false;
 
@@ -843,7 +846,7 @@ void RADIO_SetupRegisters(bool switchToForeground)
 	else
 #endif
 	{
-		BK4819_DisableVox();
+		//BK4819_DisableVox();
 	}
 
 	// RX expander
