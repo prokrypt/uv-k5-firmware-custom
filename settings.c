@@ -227,7 +227,7 @@ void SETTINGS_InitEEPROM(void)
 
 	// 0F18..0F1F
 	EEPROM_ReadBuffer(0x0F18, Data, 8);
-	gEeprom.SCAN_LIST_DEFAULT = (Data[0] < 5) ? Data[0] : 0;  // we now have 'all' channel scan option
+	gEeprom.SCAN_LIST_DEFAULT = (Data[0] < 6) ? Data[0] : 0;  // we now have 'all' channel scan option
 	for (unsigned int i = 0; i < 3; i++)
 	{
 		const unsigned int j = 1 + (i * 3);
