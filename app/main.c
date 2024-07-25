@@ -646,6 +646,7 @@ static void MAIN_Key_MENU(bool bKeyPressed, bool bKeyHeld)
 		if (bFlag) {
 			if (gScanStateDir != SCAN_OFF) {
 				CHFRSCANNER_Stop();
+				gMonitor = false;
 				return;
 			}
 
@@ -848,6 +849,7 @@ static void MAIN_Key_UP_DOWN(bool bKeyPressed, bool bKeyHeld, int8_t Direction)
 
 	// jump to the next channel
 	CHFRSCANNER_Start(false, Direction);
+	gFlagReconfigureVfos = true; // keep monitor mode on
 	gScanPauseDelayIn_10ms = 1;
 	gScheduleScanListen = false;
 

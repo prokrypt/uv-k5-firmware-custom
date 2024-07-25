@@ -260,7 +260,7 @@ static void NextMemChannel(void)
 */			// this bit doesn't yet work if the other VFO is a frequency
 			case SCAN_NEXT_CHAN_DUAL_WATCH:
 				// dual watch is enabled - include the other VFO in the scan
-				if (dwchan){
+				if (dwchan && !gMonitor){
 					if (++dualscan%4==0) {
 						dualscan=0;
 						currentScanList = SCAN_NEXT_CHAN_DUAL_WATCH;
