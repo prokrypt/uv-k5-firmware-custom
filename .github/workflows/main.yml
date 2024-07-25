@@ -31,14 +31,14 @@ jobs:
         with:
           name: voxless_test
           path: voxless*.bin
-      - name: Upload binaries to release
-        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: voxless.packed.bin
-          asset_name: voxless_$tag.packed.bin
-          tag: ${{ github.ref }}
-          release_name: release ${{ github.ref_name }}  
-          overwrite: true
+#      - name: Upload binaries to release
+#        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+#        uses: svenstaro/upload-release-action@v2
+#        with:
+#          repo_token: ${{ secrets.GITHUB_TOKEN }}
+#          file: voxless.packed.bin
+#          asset_name: voxless_$tag.packed.bin
+#          tag: ${{ github.ref }}
+#          release_name: release ${{ github.ref_name }}  
+#          overwrite: true
 #          cache-from: type=local,src=/var/cache/pacman

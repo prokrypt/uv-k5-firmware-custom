@@ -12,6 +12,9 @@ Notable features:
 * Press Menu on partial channel input to jump to channel, for those cases when you forget to start the input with `0`.
 * Smoother battery % changes, no skipped steps.
 * FM 0.2MHz steps (scanning is twice as fast). Make sure to switch to 87.5-108M if you're in the USA!
+* Global scan skip. When in channel scan mode, long-press Menu to skip channel. When not scanning, long-press Exit to unskip.
+* Monitor mode while in scan mode, just like Yaesu!
+* Dual watch while scanning. Scans the other VFO's channel 20% of the time. If other VFO gets in the way with unwanted transmissions, skip it by long-pressing Menu.
 
 --- Everything below this line hasn't been modified by me ---
 
