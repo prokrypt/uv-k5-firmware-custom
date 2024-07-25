@@ -555,6 +555,7 @@ static void MAIN_Key_EXIT(bool bKeyPressed, bool bKeyHeld)
 			else {
 				gScanKeepResult = false;
 				CHFRSCANNER_Stop();
+				gMonitor = false;
 
 #ifdef ENABLE_VOICE
 				gAnotherVoiceID = VOICE_ID_SCANNING_STOP;
