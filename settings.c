@@ -478,7 +478,7 @@ void SETTINGS_SaveFM(void)
 		//fmCfg.space    = gEeprom.FM_Space;
 		EEPROM_WriteBuffer(0x0E88, fmCfg.__raw);
 
-		for (unsigned i = 0; i < 5; i++)
+		for (unsigned i = 0; i < 6; i++)
 			EEPROM_WriteBuffer(0x0E40 + (i * 8), &gFM_Channels[i * 4]);
 	}
 #endif
