@@ -59,7 +59,7 @@ void UI_DisplayFM(void)
 			pPrintStr = String;
 		} else {
 			pPrintStr = "VFO";
-			for (unsigned int i = 0; i < 20; i++) {
+			for (unsigned int i = 0; i < ARRAY_SIZE(gFM_Channels); i++) {
 				if (gEeprom.FM_FrequencyPlaying == gFM_Channels[i]) {
 					sprintf(String, "VFO(CH%02u)", i + 1);
 					pPrintStr = String;
