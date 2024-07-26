@@ -350,6 +350,7 @@ extern volatile uint8_t      boot_counter_10ms;
 #ifdef ENABLE_FEAT_F4HWN
 	extern bool                  gK5startup;
 	extern bool                  gBackLight;
+	extern bool                  gBoldBothVFO;
 	extern uint8_t               gBacklightTimeOriginal;
 	extern uint8_t               gBacklightBrightnessOld;
 	extern uint8_t               gPttOnePushCounter;

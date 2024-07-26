@@ -192,9 +192,9 @@ void UI_DrawPixelBuffer(uint8_t (*buffer)[128], uint8_t x, uint8_t y, bool black
 static void sort(int16_t *a, int16_t *b)
 {
 	if(*a > *b) {
-		int16_t t = *a;
-		*a = *b;
-		*b = t;
+		*a ^= *b;
+		*b ^= *a;
+		*a ^= *b;
 	}
 }
 

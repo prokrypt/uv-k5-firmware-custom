@@ -179,6 +179,7 @@ void CHFRSCANNER_Stop(void)
 	dualscan=1;
 	
 	RADIO_SetupRegisters(true);
+	gBoldBothVFO = false;
 	gUpdateDisplay = true;
 }
 
@@ -261,11 +262,15 @@ static void NextMemChannel(void)
 			case SCAN_NEXT_CHAN_DUAL_WATCH:
 				// dual watch is enabled - include the other VFO in the scan
 				if (dwchan && !gMonitor){
+					if (dualscan%2==0)
+						gBoldBothVFO = false;
 					if (++dualscan%4==0) {
 						dualscan=0;
 						currentScanList = SCAN_NEXT_CHAN_DUAL_WATCH;
-						if (!gMR_ChannelExclude[dwchan-1])
+						if (!gMR_ChannelExclude[dwchan-1]) {
 							gNextMrChannel   = dwchan-1;
+							gBoldBothVFO = true;
+						}
 						break;
 					}
 				}
