@@ -936,7 +936,7 @@ void UI_DisplayMain(void)
 				{
 					case MDF_FREQUENCY:	// show the channel frequency
 						sprintf(String, "%3u.%05u", frequency / 100000, frequency % 100000);
-#ifdef ENABLE_BIG_FREQ
+/*#ifdef ENABLE_BIG_FREQ
 						if(frequency < _1GHz_in_KHz) {
 							// show the remaining 2 small frequency digits
 							UI_PrintStringSmallNormal(String + 7, 113, 0, line + 1);
@@ -945,7 +945,7 @@ void UI_DisplayMain(void)
 							UI_DisplayFrequency(String, 32, line, false);
 						}
 						else
-#endif
+#endif*/
 						{
 							// show the frequency in the main font
 							UI_PrintString(String, 32, 0, line, 8);
