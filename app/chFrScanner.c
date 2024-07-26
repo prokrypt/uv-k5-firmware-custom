@@ -55,6 +55,7 @@ void CHFRSCANNER_Start(const bool storeBackupSettings, const int8_t scan_directi
 	gScanStateDir    = scan_direction;
 
 	if (gEeprom.DUAL_WATCH != DUAL_WATCH_OFF) {
+		gBoldBothVFO = true;
 		dwchan = (gEeprom.RX_VFO + 1) & 1u;
 		dwchan = gEeprom.ScreenChannel[dwchan]+1;
 		if (!IS_MR_CHANNEL(dwchan))
@@ -179,6 +180,7 @@ void CHFRSCANNER_Stop(void)
 	dualscan=1;
 	
 	RADIO_SetupRegisters(true);
+	gBoldBothVFO = false;
 	gUpdateDisplay = true;
 }
 

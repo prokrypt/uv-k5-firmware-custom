@@ -986,7 +986,7 @@ void UI_DisplayMain(void)
 							}
 							else
 							{
-								if(activeTxVFO == vfo_num) {
+								if((activeTxVFO == vfo_num) || gBoldBothVFO) {
 									UI_PrintStringSmallBold(String, 32 + 4, 0, line);
 								}
 								else
