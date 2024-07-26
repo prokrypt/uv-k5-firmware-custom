@@ -904,11 +904,11 @@ void UI_DisplayMain(void)
 				} else {
 					countList = __builtin_popcount(att.scanlists & 0b111);
 					if (att.scanlists & 0b001)
-						memcpy(p_line0 + 129 - (2 * 8), BITMAP_ScanList1, sizeof(BITMAP_ScanList1));
+						memcpy(p_line0 + 129 - (2 * 8), &BITMAP_ScanList123[0], sizeof(BITMAP_ScanList123)/3);
 					if (att.scanlists & 0b010)
-						memcpy(p_line0 + 129 - (1 * 8), BITMAP_ScanList2, sizeof(BITMAP_ScanList2));
+						memcpy(p_line0 + 129 - (1 * 8), &BITMAP_ScanList123[7], sizeof(BITMAP_ScanList123)/3);
 					if (att.scanlists & 0b100)
-						memcpy(p_line1 + 129 - (2 * 8), BITMAP_ScanList3, sizeof(BITMAP_ScanList3));
+						memcpy(p_line1 + 129 - (2 * 8), &BITMAP_ScanList123[14], sizeof(BITMAP_ScanList123)/3);
 				}
 
 				if(countList == 0)

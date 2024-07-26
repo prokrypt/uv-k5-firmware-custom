@@ -96,13 +96,9 @@ void UI_DisplayStatus()
 			if (IS_MR_CHANNEL(gNextMrChannel) && !SCANNER_IsScanning()) { // channel mode
 				switch(gEeprom.SCAN_LIST_DEFAULT) {
 					case 0: 
-						memcpy(line + x + 2, BITMAP_ScanList1, sizeof(BITMAP_ScanList1));
-						break;
 					case 1:
-						memcpy(line + x + 2, BITMAP_ScanList2, sizeof(BITMAP_ScanList2));
-						break;
 					case 2:
-						memcpy(line + x + 2, BITMAP_ScanList3, sizeof(BITMAP_ScanList3));
+						memcpy(line + x + 2, &BITMAP_ScanList123[gEeprom.SCAN_LIST_DEFAULT], sizeof(BITMAP_ScanList123)/3);
 						break;
 					case 3:
 						memcpy(line + x + 2, BITMAP_ScanList4, sizeof(BITMAP_ScanList4));
