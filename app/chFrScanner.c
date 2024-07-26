@@ -55,7 +55,6 @@ void CHFRSCANNER_Start(const bool storeBackupSettings, const int8_t scan_directi
 	gScanStateDir    = scan_direction;
 
 	if (gEeprom.DUAL_WATCH != DUAL_WATCH_OFF) {
-		gBoldBothVFO = true;
 		dwchan = (gEeprom.RX_VFO + 1) & 1u;
 		dwchan = gEeprom.ScreenChannel[dwchan]+1;
 		if (!IS_MR_CHANNEL(dwchan))
@@ -263,11 +262,15 @@ static void NextMemChannel(void)
 			case SCAN_NEXT_CHAN_DUAL_WATCH:
 				// dual watch is enabled - include the other VFO in the scan
 				if (dwchan && !gMonitor){
+					if (dualscan%2==0)
+						gBoldBothVFO = false;
 					if (++dualscan%4==0) {
 						dualscan=0;
 						currentScanList = SCAN_NEXT_CHAN_DUAL_WATCH;
-						if (!gMR_ChannelExclude[dwchan-1])
+						if (!gMR_ChannelExclude[dwchan-1]) {
 							gNextMrChannel   = dwchan-1;
+							gBoldBothVFO = true;
+						}
 						break;
 					}
 				}
