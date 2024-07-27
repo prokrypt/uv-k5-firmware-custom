@@ -11,16 +11,12 @@ const uint8_t gFontPowerSave[2][6] =
 	{0x00, 0x26, 0x49, 0x49, 0x49, 0x32},
 };
 
-const uint8_t gFontPttOnePush[2][6] =
+const uint8_t gFontPtt[4][6] =
 {
-	{0x00, 0x3e, 0x41, 0x41, 0x41, 0x3e},
-	{0x00, 0x7f, 0x9, 0x9, 0x9, 0x6},
-};
-
-const uint8_t gFontPttClassic[2][6] =
-{
-	{0x00, 0x3e, 0x41, 0x41, 0x41, 0x22},
+	{0x00, 0x3e, 0x41, 0x41, 0x41, 0x22}, //Classic 0
 	{0x00, 0x7f, 0x40, 0x40, 0x40, 0x40},
+	{0x00, 0x3e, 0x41, 0x41, 0x41, 0x3e}, //OnePush 1
+	{0x00, 0x7f, 0x9, 0x9, 0x9, 0x6},
 };
 
 const uint8_t gFontF[1][8] =
@@ -84,9 +80,8 @@ const uint8_t BITMAP_BatteryLevel[2] =
 };
 
 // Quansheng way (+ pole to the left)
-const uint8_t BITMAP_BatteryLevel1[17] =
+const uint8_t BITMAP_BatteryLevel1[16] =
 {
-	0b00000000,
 	0b00111110,
 	0b00100010,
 	0b01000001,
@@ -159,7 +154,7 @@ const uint8_t BITMAP_VFO_NotDefault[8] =
 	0b00001000
 };
 
-const uint8_t BITMAP_ScanList123[21] =
+const uint8_t BITMAP_ScanList1230[28] =
 {	// '1' symbol
 	0b01111111,
 	0b01111111,
@@ -184,10 +179,7 @@ const uint8_t BITMAP_ScanList123[21] =
 	0b01101011,
 	0b01111111,
 	0b01111111,
-};
-
-const uint8_t BITMAP_ScanList4[7] =
-{	// '0' symbol
+	// '0' symbol
 	0b01111111,
 	0b01111111,
 	0b01000011,
