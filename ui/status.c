@@ -98,7 +98,7 @@ void UI_DisplayStatus()
 					case 0: 
 					case 1:
 					case 2:
-						memcpy(line + x + 2, &BITMAP_ScanList123[gEeprom.SCAN_LIST_DEFAULT], sizeof(BITMAP_ScanList123)/3);
+						memcpy(line + x + 2, &BITMAP_ScanList123[gEeprom.SCAN_LIST_DEFAULT*7], sizeof(BITMAP_ScanList123)/3);
 						break;
 					case 3:
 						memcpy(line + x + 2, BITMAP_ScanList4, sizeof(BITMAP_ScanList4));
