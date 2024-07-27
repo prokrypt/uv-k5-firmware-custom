@@ -240,7 +240,7 @@ void UI_DisplayStatus()
 			break;
 	}
 
-	x2 -= (7 * strlen(str));
+	x2 -= (7 * strlen(str)) + 1;
 	UI_PrintStringSmallBufferNormal(str, line + x2);
 
 	// **************
