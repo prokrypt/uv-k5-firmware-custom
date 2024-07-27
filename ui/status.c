@@ -98,10 +98,8 @@ void UI_DisplayStatus()
 					case 0: 
 					case 1:
 					case 2:
-						memcpy(line + x + 2, &BITMAP_ScanList123[gEeprom.SCAN_LIST_DEFAULT*7], sizeof(BITMAP_ScanList123)/3);
-						break;
 					case 3:
-						memcpy(line + x + 2, BITMAP_ScanList4, sizeof(BITMAP_ScanList4));
+						memcpy(line + x + 2, &BITMAP_ScanList1230[gEeprom.SCAN_LIST_DEFAULT*7], sizeof(BITMAP_ScanList1230)/4);
 						break;
 					case 4:
 						memcpy(line + x + 0, BITMAP_ScanList5, sizeof(BITMAP_ScanList5));
@@ -184,16 +182,9 @@ void UI_DisplayStatus()
 
 #ifdef ENABLE_FEAT_F4HWN
 	// PTT indicator
-	if (gSetting_set_ptt_session) {
-		memcpy(line + x, gFontPttOnePush, sizeof(gFontPttOnePush));
-		x1 = x + sizeof(gFontPttOnePush) + 1;
-	}
-	else
-	{
-		memcpy(line + x, gFontPttClassic, sizeof(gFontPttClassic));
-		x1 = x + sizeof(gFontPttClassic) + 1;		
-	}
-	x += sizeof(gFontPttClassic) + 3;
+	memcpy(line + x, &gFontPtt[gSetting_set_ptt_session*2], sizeof(gFontPtt)/2);
+	x1 = x + sizeof(gFontPtt)/2 + 1;
+	x += sizeof(gFontPtt)/2 + 3;
 #endif
 
 	x = MAX(x1, 70u);

@@ -5,8 +5,7 @@
 #include <stdint.h>
 
 extern const uint8_t gFontPowerSave[2][6];
-extern const uint8_t gFontPttOnePush[2][6];
-extern const uint8_t gFontPttClassic[2][6];
+extern const uint8_t gFontPtt[4][6];
 extern const uint8_t gFontF[1][8];
 extern const uint8_t gFontS[1][6];
 
@@ -31,8 +30,7 @@ extern const uint8_t BITMAP_Ready[7];
 extern const uint8_t BITMAP_Antenna[5];
 extern const uint8_t BITMAP_VFO_Default[8];
 extern const uint8_t BITMAP_VFO_NotDefault[8];
-extern const uint8_t BITMAP_ScanList123[21];
-extern const uint8_t BITMAP_ScanList4[7];
+extern const uint8_t BITMAP_ScanList1230[28];
 extern const uint8_t BITMAP_ScanList5[11];
 extern const uint8_t BITMAP_ScanList6[9];
 extern const uint8_t BITMAP_compand[6];
