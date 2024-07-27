@@ -19,6 +19,7 @@
 
 #ifdef ENABLE_FMRADIO
 	void UI_DisplayFM(void);
+	int UI_RSSIestimate(uint8_t snr, uint8_t afcl_railed, int rssi);
 #endif
 
 #endif

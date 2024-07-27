@@ -29,6 +29,20 @@
 #include "ui/inputbox.h"
 #include "ui/ui.h"
 
+int UI_RSSIestimate(uint8_t snr, uint8_t afcl_railed, int rssi)
+{
+	if (afcl_railed == 0 && rssi < 10) {
+		return -1;
+	} else {
+		const int estimatedRSSI = snr + (rssi * 2);
+		if (estimatedRSSI < 0) {
+			return -1;
+		} else {
+			return estimatedRSSI;
+		}
+	}
+}
+
 void UI_DisplayFM(void)
 {
 	char String[16] = {0};
@@ -44,6 +58,18 @@ void UI_DisplayFM(void)
 		);
 	
 	UI_PrintStringSmallNormal(String, 1, 0, 6);
+
+	memset(String, 0, sizeof(String));
+        const uint16_t Status = BK1080_ReadRegister(BK1080_REG_10);
+        const uint16_t Test2 = BK1080_ReadRegister(BK1080_REG_07);
+        const int RSSIestimate = UI_RSSIestimate(BK1080_REG_07_GET_SNR(Test2), (uint8_t)BK1080_REG_10_AFCRL_RAILED, BK1080_REG_10_GET_RSSI(Status));
+        if (RSSIestimate) {
+                sprintf(String, "RSSI: %d", RSSIestimate);
+        } else {
+                sprintf(String, "RSSI: -");
+        }
+
+        UI_PrintStringSmallNormal(String, 1, 0, 5);
 
 	//uint8_t spacings[] = {20,10,5};
 	//sprintf(String, "%d0k", spacings[gEeprom.FM_Space % 3]);
