@@ -1,9 +1,9 @@
 on:
   push:
-#    paths:
-#      - '**.c'
-#      - '**.h'
-#      - 'Makefile'
+    paths:
+      - '**.c'
+      - '**.h'
+      - 'Makefile'
 
 jobs:
   build:
