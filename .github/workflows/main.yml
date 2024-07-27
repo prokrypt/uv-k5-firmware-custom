@@ -1,9 +1,9 @@
 on:
   push:
-    paths:
-      - '**.c'
-      - '**.h'
-      - 'Makefile'
+#    paths:
+#      - '**.c'
+#      - '**.h'
+#      - 'Makefile'
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       - name: base-devel, arm-none-eabi-gcc arm-none-eabi-newlib git python-pip python-crcmod
         run:  pacman -Syyu base-devel arm-none-eabi-gcc arm-none-eabi-newlib git python-pip python-crcmod --noconfirm
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: safe.directory
         run:  git config --global --add safe.directory /__w/uv-k5-firmware-custom/uv-k5-firmware-custom
       - name: Make
@@ -27,13 +27,13 @@ jobs:
       - name: size
         run:  arm-none-eabi-size voxless
       - name: 'Upload Artifact'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: voxless_test
           path: voxless*.bin
 #      - name: Upload binaries to release
 #        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-#        uses: svenstaro/upload-release-action@v2
+#        uses: svenstaro/upload-release-action@v3
 #        with:
 #          repo_token: ${{ secrets.GITHUB_TOKEN }}
 #          file: voxless.packed.bin
