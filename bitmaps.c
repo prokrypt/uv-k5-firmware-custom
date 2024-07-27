@@ -80,8 +80,9 @@ const uint8_t BITMAP_BatteryLevel[2] =
 };
 
 // Quansheng way (+ pole to the left)
-const uint8_t BITMAP_BatteryLevel1[16] =
+const uint8_t BITMAP_BatteryLevel1[17] =
 {
+	0b00000000,
 	0b00111110,
 	0b00100010,
 	0b01000001,

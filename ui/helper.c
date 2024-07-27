@@ -64,7 +64,7 @@ void UI_GenerateChannelStringEx(char *pString, const bool bShowPrefix, const uin
 		sprintf(pString, "%03u", ChannelNumber + 1);
 	}
 }
-/*
+
 void UI_PrintStringBuffer(const char *pString, uint8_t * buffer, uint32_t char_width, const uint8_t *font)
 {
 	const size_t Length = strlen(pString);
@@ -77,20 +77,7 @@ void UI_PrintStringBuffer(const char *pString, uint8_t * buffer, uint32_t char_w
 		}
 	}
 }
-*/
-// CHATGPT ඞ
-void UI_PrintStringBuffer(const char *pString, uint8_t *buffer, uint32_t char_width, const uint8_t *font) {
-   uint32_t offset = 1;
-    while (*pString) {
-        const uint8_t c = *pString++;
-        if (c > ' ' && c < 127) {
-            const uint32_t index = c - ' ' - 1;
-            memcpy(buffer + offset, font + index * char_width, char_width);
-            offset += char_width + 1;
-        }
-    }
-}
-/*
+
 void UI_PrintString(const char *pString, uint8_t Start, uint8_t End, uint8_t Line, uint8_t Width)
 {
 	size_t i;
@@ -109,26 +96,6 @@ void UI_PrintString(const char *pString, uint8_t Start, uint8_t End, uint8_t Lin
 			memcpy(gFrameBuffer[Line + 1] + ofs, &gFontBig[index][7], 7);
 		}
 	}
-}
-*/
-// CHATGPT ඞ
-void UI_PrintString(const char *pString, uint8_t Start, uint8_t End, uint8_t Line, uint8_t Width) {
-    size_t Length = strlen(pString);
-    uint8_t offset = Start;
-
-    if (End > Start) {
-        offset += (((End - Start) - (Length * Width)) + 1) / 2;
-    }
-
-    uint8_t c;
-    while ((c = *pString++)) {
-        if (c > ' ' && c < 127) {
-            unsigned int index = c - ' ' - 1;
-            memcpy(gFrameBuffer[Line] + offset, &gFontBig[index][0], 7);
-            memcpy(gFrameBuffer[Line + 1] + offset, &gFontBig[index][7], 7);
-            offset += Width;
-        }
-    }
 }
 
 void UI_PrintStringSmall(const char *pString, uint8_t Start, uint8_t End, uint8_t Line, uint8_t char_width, const uint8_t *font)
@@ -177,7 +144,7 @@ void UI_PrintStringSmallBufferBold(const char *pString, uint8_t * buffer)
 #endif
 	UI_PrintStringBuffer(pString, buffer, char_width, font);
 }
-/*
+
 void UI_DisplayFrequency(const char *string, uint8_t X, uint8_t Y, bool center)
 {
 	const unsigned int char_width  = 13;
@@ -211,38 +178,6 @@ void UI_DisplayFrequency(const char *string, uint8_t X, uint8_t Y, bool center)
 		pFb0 += char_width;
 		pFb1 += char_width;
 	}
-}
-*/
-// CHATGPT ඞ
-void UI_DisplayFrequency(const char *string, uint8_t X, uint8_t Y, bool center) {
-    const unsigned int char_width = 13;
-    uint8_t *pFb0 = gFrameBuffer[Y] + X;
-    uint8_t *pFb1 = pFb0 + 128;
-    bool bCanDisplay = false;
-
-    while (*string) {
-        char c = *string++;
-        if (c == '-') c = '9' + 1;
-
-        if (bCanDisplay || c != ' ') {
-            bCanDisplay = true;
-            if (c >= '0' && c <= '9') {
-                memcpy(pFb0 + 2, gFontBigDigits[c - '0'], char_width - 3);
-                memcpy(pFb1 + 2, gFontBigDigits[c - '0'] + char_width - 3, char_width - 3);
-            } else if (c == '.') {
-                memset(pFb0, 0x60, 3);
-                memset(pFb1, 0x60, 3);
-                pFb0 += 3;
-                pFb1 += 3;
-                continue;
-            }
-        } else if (center) {
-            pFb0 -= 6;
-            pFb1 -= 6;
-        }
-        pFb0 += char_width;
-        pFb1 += char_width;
-    }
 }
 
 void UI_DrawPixelBuffer(uint8_t (*buffer)[128], uint8_t x, uint8_t y, bool black)
@@ -300,7 +235,7 @@ static void sort(int16_t *a, int16_t *b)
 	  uint8_t pixels;
 	  const uint8_t *p = (const uint8_t *)pString;
 
-	  while ((c = *p++) != '\0') {
+	  while ((c = *p++) && c != '\0') {
 	    c -= 0x20;
 	    for (int i = 0; i < 3; ++i) {
 	      pixels = gFont3x5[c][i];

@@ -19,7 +19,7 @@ extern const uint8_t gFontDWR[3][6];
 extern const uint8_t gFontHold[2][5];
 
 extern const uint8_t BITMAP_BatteryLevel[2];
-extern const uint8_t BITMAP_BatteryLevel1[16];
+extern const uint8_t BITMAP_BatteryLevel1[17];
 extern const uint8_t BITMAP_USB_C[9];
 extern const uint8_t BITMAP_Ready[7];
 

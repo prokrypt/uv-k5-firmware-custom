@@ -216,7 +216,7 @@ void UI_DisplayStatus()
 	*/
 	
 	// Battery
-	unsigned int x2 = LCD_WIDTH - sizeof(BITMAP_BatteryLevel1);
+	unsigned int x2 = LCD_WIDTH - sizeof(BITMAP_BatteryLevel1) - 0;
 
 	UI_DrawBattery(line + x2, gBatteryDisplayLevel, gLowBatteryBlink);
 
@@ -240,7 +240,7 @@ void UI_DisplayStatus()
 			break;
 	}
 
-	x2 -= (7 * strlen(str))+1;
+	x2 -= (7 * strlen(str));
 	UI_PrintStringSmallBufferNormal(str, line + x2);
 
 	// **************
