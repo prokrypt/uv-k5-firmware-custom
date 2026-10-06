@@ -67,7 +67,15 @@ static uint8_t blacklistFreqsIdx;
 #endif
 
 const char *bwOptions[] = {"25", "12.5", "6.25"};
-const uint8_t modulationTypeTuneSteps[] = {100, 50, 10};
+const uint8_t modulationTypeTuneSteps[MODULATION_UKNOWN] = {
+  [MODULATION_FM] = 100,
+  [MODULATION_AM] = 50,
+  [MODULATION_USB] = 10,
+#ifdef ENABLE_BYP_RAW_DEMODULATORS
+  [MODULATION_BYP] = 10,
+  [MODULATION_RAW] = 10,
+#endif
+};
 const uint8_t modTypeReg47Values[] = {1, 7, 5};
 
 SpectrumSettings settings = {.stepsCount = STEPS_64,
@@ -129,8 +137,8 @@ static uint16_t GetRegMenuValue(uint8_t st) {
 
 void LockAGC()
 {
-  RADIO_SetupAGC(settings.modulationType==MODULATION_AM, lockAGC);
   lockAGC = true;
+  RADIO_SetupAGC(isListening && settings.modulationType == MODULATION_AM, lockAGC);
 }
 
 static void SetRegMenuValue(uint8_t st, bool add) {
@@ -854,7 +862,9 @@ static void DrawRssiTriggerLevel() {
 }
 
 static void DrawTicks() {
+#ifdef ENABLE_SCAN_RANGES
   if (gScanRangeStart) return;
+#endif
   uint32_t f = GetFStart();
   uint32_t span = GetFEnd() - GetFStart();
   uint32_t step = span / 128;

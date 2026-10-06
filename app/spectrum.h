@@ -40,8 +40,13 @@
 
 static const uint8_t DrawingEndY = 40;
 
+// -dBm thresholds for S1..S9 and S9+10, matching the main screen's S-meter
 static const uint8_t U8RssiMap[] = {
-    121, 115, 109, 103, 97, 91, 85, 79, 73, 63,
+#ifdef ENABLE_FEAT_F4HWN
+    141, 135, 129, 123, 117, 111, 105, 99, 93, 83, // VHF/UHF: S9 = -93 dBm
+#else
+    121, 115, 109, 103, 97, 91, 85, 79, 73, 63,    // HF: S9 = -73 dBm
+#endif
 };
 
 static const uint16_t scanStepValues[] = {
