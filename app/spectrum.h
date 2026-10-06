@@ -40,8 +40,13 @@
 
 static const uint8_t DrawingEndY = 40;
 
+// -dBm thresholds for S1..S9 and S9+10, matching the main screen's S-meter
 static const uint8_t U8RssiMap[] = {
-    121, 115, 109, 103, 97, 91, 85, 79, 73, 63,
+#ifdef ENABLE_FEAT_F4HWN
+    141, 135, 129, 123, 117, 111, 105, 99, 93, 83, // VHF/UHF: S9 = -93 dBm
+#else
+    121, 115, 109, 103, 97, 91, 85, 79, 73, 63,    // HF: S9 = -73 dBm
+#endif
 };
 
 static const uint16_t scanStepValues[] = {
@@ -72,11 +77,20 @@ static const uint16_t scanStepBWRegValues[] = {
     0b0110110001001000, // 6.25
     // 1250
     0b0111111100001000, // 6.25
+    // 1500
+    0b0011011000101000, // 25
+    // 2000
+    0b0011011000101000, // 25
     // 2500
+    0b0011011000101000, // 25
+    // 5000
     0b0011011000101000, // 25
     // 10000
     0b0011011000101000, // 25
 };
+
+_Static_assert(ARRAY_SIZE(scanStepBWRegValues) == ARRAY_SIZE(scanStepValues),
+               "scanStepBWRegValues needs one entry per scanStepValues entry");
 
 static const uint16_t listenBWRegValues[] = {
     0b0011011000101000, // 25
