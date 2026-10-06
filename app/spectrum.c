@@ -109,8 +109,9 @@ uint16_t statuslineUpdateTimer = 0;
 static uint8_t DBm2S(int dbm) {
   uint8_t i = 0;
   dbm *= -1;
+  // U8RssiMap holds the S1..S9+10 thresholds, anything weaker than S1 is S0
   for (i = 0; i < ARRAY_SIZE(U8RssiMap); i++) {
-    if (dbm >= U8RssiMap[i]) {
+    if (dbm > U8RssiMap[i]) {
       return i;
     }
   }
@@ -286,7 +287,13 @@ static void ResetPeak() {
   peak.rssi = 0;
 }
 
-bool IsCenterMode() { return settings.scanStepIndex < S_STEP_2_5kHz; }
+bool IsCenterMode() {
+#ifdef ENABLE_SCAN_RANGES
+  if (gScanRangeStart)
+    return false;
+#endif
+  return settings.scanStepIndex < S_STEP_2_5kHz;
+}
 // scan step in 0.01khz
 uint16_t GetScanStep() { return scanStepValues[settings.scanStepIndex]; }
 
@@ -294,7 +301,7 @@ uint16_t GetStepsCount()
 {
 #ifdef ENABLE_SCAN_RANGES
   if(gScanRangeStart) {
-    return (gScanRangeStop - gScanRangeStart) / GetScanStep();
+    return clamp((gScanRangeStop - gScanRangeStart) / GetScanStep(), 1, UINT16_MAX);
   }
 #endif
   return (128 >> settings.stepsCount);
@@ -312,7 +319,7 @@ uint32_t GetFStart() {
   return IsCenterMode() ? currentFreq - (GetBW() >> 1) : currentFreq;
 }
 
-uint32_t GetFEnd() { return currentFreq + GetBW(); }
+uint32_t GetFEnd() { return GetFStart() + GetBW(); }
 
 static void TuneToPeak() {
   scanInfo.f = peak.f;
@@ -333,8 +340,9 @@ uint16_t GetBWRegValueForScan() {
 
 uint16_t GetRssi() {
   // SYSTICK_DelayUs(800);
-  // testing autodelay based on Glitch value
-  while ((BK4819_ReadRegister(0x63) & 0b11111111) >= 255) {
+  // testing autodelay based on Glitch value, capped at ~5ms so a
+  // saturated glitch counter can't hang the scan
+  for (uint8_t t = 0; t < 50 && (BK4819_ReadRegister(0x63) & 0b11111111) >= 255; t++) {
     SYSTICK_DelayUs(100);
   }
   uint16_t rssi = BK4819_GetRSSI();
@@ -360,7 +368,7 @@ static void ToggleAudio(bool on) {
 static void ToggleRX(bool on) {
   isListening = on;
 
-  RADIO_SetupAGC(on, lockAGC);
+  RADIO_SetupAGC(on && settings.modulationType == MODULATION_AM, lockAGC);
   BK4819_ToggleGpioOut(BK4819_GPIO6_PIN2_GREEN, on);
 
   ToggleAudio(on);
@@ -426,6 +434,9 @@ static void UpdateScanInfo() {
   if (scanInfo.rssi < scanInfo.rssiMin) {
     scanInfo.rssiMin = scanInfo.rssi;
     settings.dbMin = Rssi2DBm(scanInfo.rssiMin);
+    // Rssi2PX divides by dbMax - dbMin, keep it positive
+    if (settings.dbMin >= settings.dbMax)
+      settings.dbMin = settings.dbMax - 1;
     redrawStatus = true;
   }
 }
@@ -496,7 +507,7 @@ static void UpdateRssiTriggerLevel(bool inc) {
 static void UpdateDBMax(bool inc) {
   if (inc && settings.dbMax < 10) {
     settings.dbMax += 5;
-  } else if (!inc && settings.dbMax > settings.dbMin) {
+  } else if (!inc && settings.dbMax - 5 > settings.dbMin) {
     settings.dbMax -= 5;
   } else {
     return;
@@ -707,8 +718,11 @@ uint8_t Rssi2Y(uint16_t rssi) {
 }
 
 static void DrawSpectrum() {
+  // stretch the steps across the full width, the same way DrawArrow places the peak
+  // (over 128 steps SetRssiHistory already bins them into one slot per column)
+  uint16_t steps = MIN(GetStepsCount(), ARRAY_SIZE(rssiHistory));
   for (uint8_t x = 0; x < 128; ++x) {
-    uint16_t rssi = rssiHistory[x >> settings.stepsCount];
+    uint16_t rssi = rssiHistory[x * steps / 128];
     if (rssi != RSSI_MAX_VALUE) {
       DrawVLine(Rssi2Y(rssi), DrawingEndY, x, true);
     }
@@ -748,21 +762,17 @@ static void DrawStatus() {
   }
 }
 
-uint32_t pmfreq;
-uint32_t pfreq;
+// last frequency looked up in the channel list, and whether it was found
+static uint32_t pfreq;
+static bool pfreqIsMem;
 
 //#ifndef ENABLE_FMRADIO
   static void ShowChannelName(uint32_t f) {
     unsigned int i;
     //char s[12];
-    memset(String, 0, sizeof(String));
-    if (pmfreq==peak.f) {
-        UI_PrintStringSmallBold("M", 8, 127, 1);
-        return;
-    }
-    if (pfreq==peak.f)
-        return;
-    pfreq = peak.f;
+    if (pfreq != f) {
+      pfreq = f;
+      pfreqIsMem = false;
 //    if ( isListening ) {
       for (i = 0; IS_MR_CHANNEL(i); i++) {
           if (RADIO_CheckValidChannel(i, false, 0)) {
@@ -773,13 +783,16 @@ uint32_t pfreq;
 //                if ( strlen(String) != 0 )
 //                  strcat(String, "/");   // Add a space to result
 //                strcat(String, "M");
-                  pmfreq = peak.f;
+                  pfreqIsMem = true;
 //              }
               break;
             }
           }
       }
 //    }
+    }
+    if (pfreqIsMem)
+      UI_PrintStringSmallBold("M", 8, 127, 1);
 
 //    if (String[0] != 0) {
 //      if ( strlen(String) > 19 ) {
@@ -1111,7 +1124,7 @@ static void RenderStill() {
 
   int dbm = Rssi2DBm(scanInfo.rssi);
   uint8_t s = DBm2S(dbm);
-  sprintf(String, "S: %u", s);
+  sprintf(String, s > 9 ? "S: 9+" : "S: %u", s);
   GUI_DisplaySmallest(String, 4, 25, false, true);
   sprintf(String, "%d dBm", dbm);
   GUI_DisplaySmallest(String, 28, 25, false, true);
@@ -1350,11 +1363,12 @@ void APP_RunSpectrum() {
 #ifdef ENABLE_SCAN_RANGES
   if(gScanRangeStart) {
     currentFreq = initialFreq = gScanRangeStart;
-    for(uint8_t i = 0; i < ARRAY_SIZE(scanStepValues); i++) {
-      if(scanStepValues[i] >= gTxVfo->StepFrequency) {
+    // largest scan step not coarser than the VFO step, so no channel gets skipped,
+    // bumped up while the range needs more steps than fit in 16 bits
+    settings.scanStepIndex = 0;
+    for(uint8_t i = 1; i < ARRAY_SIZE(scanStepValues); i++) {
+      if(scanStepValues[i] <= gTxVfo->StepFrequency || GetStepsCount() == UINT16_MAX)
         settings.scanStepIndex = i;
-        break;
-      }
     }
     settings.stepsCount = STEPS_128;
   }
@@ -1380,6 +1394,7 @@ void APP_RunSpectrum() {
 
   ResetBlacklist();
   memset(rssiHistory, 0, sizeof(rssiHistory));
+  pfreq = 0; // channels may have been edited since the last run
 
   isInitialized = true;
 
