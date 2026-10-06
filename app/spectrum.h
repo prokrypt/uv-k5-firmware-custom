@@ -72,11 +72,20 @@ static const uint16_t scanStepBWRegValues[] = {
     0b0110110001001000, // 6.25
     // 1250
     0b0111111100001000, // 6.25
+    // 1500
+    0b0011011000101000, // 25
+    // 2000
+    0b0011011000101000, // 25
     // 2500
+    0b0011011000101000, // 25
+    // 5000
     0b0011011000101000, // 25
     // 10000
     0b0011011000101000, // 25
 };
+
+_Static_assert(ARRAY_SIZE(scanStepBWRegValues) == ARRAY_SIZE(scanStepValues),
+               "scanStepBWRegValues needs one entry per scanStepValues entry");
 
 static const uint16_t listenBWRegValues[] = {
     0b0011011000101000, // 25

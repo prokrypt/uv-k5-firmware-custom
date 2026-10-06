@@ -327,7 +327,7 @@ static void DeInitSpectrum() {
   isInitialized = false;
 }
 
-uint8_t GetBWRegValueForScan() {
+uint16_t GetBWRegValueForScan() {
   return scanStepBWRegValues[settings.scanStepIndex];
 }
 
@@ -400,7 +400,7 @@ static void ResetBlacklist() {
       rssiHistory[i] = 0;
   }
 #ifdef ENABLE_SCAN_RANGES
-  memset(blacklistFreqs, 0, sizeof(blacklistFreqs));
+  memset(blacklistFreqs, 0xFF, sizeof(blacklistFreqs)); // 0xFFFF marks an empty slot
   blacklistFreqsIdx = 0;
 #endif
 }
@@ -680,10 +680,9 @@ static void Blacklist() {
 #ifdef ENABLE_SCAN_RANGES
 static bool IsBlacklisted(uint16_t idx)
 {
-  if(blacklistFreqsIdx)
-    for(uint8_t i = 0; i < ARRAY_SIZE(blacklistFreqs); i++)
-      if(blacklistFreqs[i] == idx)
-        return true;
+  for(uint8_t i = 0; i < ARRAY_SIZE(blacklistFreqs); i++)
+    if(blacklistFreqs[i] == idx)
+      return true;
   return false;
 }
 #endif
@@ -1198,7 +1197,9 @@ bool HandleUserInput() {
 }
 
 static void Scan() {
-  if (rssiHistory[scanInfo.i] != RSSI_MAX_VALUE
+  // rssiHistory only holds per-step blacklist markers when there is one slot per step
+  if ((scanInfo.measurementsCount > ARRAY_SIZE(rssiHistory) ||
+       rssiHistory[scanInfo.i] != RSSI_MAX_VALUE)
 #ifdef ENABLE_SCAN_RANGES
   && !IsBlacklisted(scanInfo.i)
 #endif
@@ -1377,6 +1378,7 @@ void APP_RunSpectrum() {
 
   RelaunchScan();
 
+  ResetBlacklist();
   memset(rssiHistory, 0, sizeof(rssiHistory));
 
   isInitialized = true;
